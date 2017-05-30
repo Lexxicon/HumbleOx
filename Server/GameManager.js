@@ -19,6 +19,7 @@ GameManager.prototype.resourceLimit = 10;
 GameManager.prototype.resourceMax = 400;
 GameManager.prototype.resourceMin = 300;
 
+GameManager.prototype.mutationRate = 0.01;
 GameManager.prototype.baseCullRate = 0.1;
 GameManager.prototype.baseSpawnInterval = 300;
 
@@ -48,8 +49,12 @@ GameManager.prototype.cull = function(){
 };
 
 GameManager.prototype.spawnCreep = function () {
-  let i = Math.floor(Math.random() * this.genePool.length);
-  this.creeps.push(Creep.breed(this.genePool[i]));
+  if(this.genePool.length == 0 || Math.random() < this.mutationRate){
+    this.creeps.push(Creep.random());
+  }else{
+    let i = Math.floor(Math.random() * this.genePool.length);
+    this.creeps.push(Creep.breed(this.genePool[i], this.world, this.mutationRate));
+  }
 };
 
 GameManager.prototype.update = function(deltaTime){

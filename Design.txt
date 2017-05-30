@@ -45,7 +45,9 @@ Tower Defense
     Stats
       Move Speed
       Health
-      Move Vectors
+      Movement
+        Move Vectors
+        Flow Field
       Spawn Location
       Time to live
     Evolve over time

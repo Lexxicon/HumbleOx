@@ -45,6 +45,10 @@ function randomRange(max){
   return (Math.random() * 2 - 1) * max;
 }
 
+Creep.random = function(){
+  return new Creep();
+};
+
 Creep.breed = function(parent, world, mutationRate){
   let mutant = parent.copy();
   mutationRate = mutationRate || 0.01;
