@@ -8,7 +8,7 @@ function Creep(parent){
     this.spawnLocation = new Vector(0,0);
     this.timeToLive = 30;
   }else{
-    this.movements = parent.movements.slice();
+    this.movements = parent.movements.map(p=>p.cpy());
     this.moveSpeed = parent.moveSpeed;
     this.health = parent.health;
     this.spawnLocation = parent.spawnLocation;
@@ -42,7 +42,7 @@ function mutate(value, amount, rate){
 }
 
 function randomRange(max){
-  return (Math.random() * 2 - 1) * amount;
+  return (Math.random() * 2 - 1) * max;
 }
 
 Creep.breed = function(parent, world, mutationRate){
@@ -50,10 +50,10 @@ Creep.breed = function(parent, world, mutationRate){
   mutationRate = mutationRate || 0.01;
 
   mutant.moveSpeed = mutate(mutant.moveSpeed, 1, mutationRate);
-  mutant.health = mutate(mutant.moveSpeed, .5, mutationRate);
+  mutant.health = mutate(mutant.health, .5, mutationRate);
   mutant.timeToLive = mutate(mutant.timeToLive, 4, mutationRate);
 
-  if(Math.random() < rate){
+  if(Math.random() < mutationRate){
     mutant.spawnLocation = moveAlongRect(mutant.spawnLocation, randomRange(10), world);
   }
 
@@ -64,6 +64,7 @@ Creep.breed = function(parent, world, mutationRate){
   }
 
   let baby = new Creep(mutant);
+  return baby;
 };
 
 if (typeof module !== 'undefined' && module.exports) {
