@@ -11,13 +11,13 @@ function Creep(parent){
     this.movements = parent.movements.map(p=>p.cpy());
     this.moveSpeed = parent.moveSpeed;
     this.health = parent.health;
-    this.spawnLocation = parent.spawnLocation;
-    this.timeToLive = parent.spawnLocation;
+    this.spawnLocation = parent.spawnLocation.cpy();
+    this.timeToLive = parent.timeToLive;
   }
 
   this.age = 0;
   this.damageTaken = 0;
-  this.pos = this.spawnLocation;
+  this.pos = this.spawnLocation.cpy();
 }
 
 Creep.prototype.update = function(deltaTime){
