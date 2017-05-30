@@ -1,0 +1,54 @@
+Tower Defense
+  Co-op
+    Spawn rate based on player count
+      for resources and creeps
+
+  Score
+    Time
+    Resource Harvested
+    Creeps killed
+
+  One minute grace period
+
+  Heart in middle has lives
+    10 + playerCount * 4
+
+  Resource
+    Random spawns
+      Only so many can be spawned at a time
+    Has limited quantity
+    leaks quantity over time
+    dies when out of quantity
+
+  Towers
+    Towers run on resource
+      Have local storage
+    Resource is harvested
+    Resource travels on lines to towers
+      Pathfinding will suck
+      What if we use diffusion instead?
+
+    Types
+      Shooty
+      Harvester
+      Transporter
+      Storage
+      Wall
+        Kills Creep on contact
+        Dies if out of resource
+
+  Creeps
+    Spawn at screen edge
+    What is their goal?
+      Kill heart at middle of map
+      Deal one damage and die on contact
+    Stats
+      Move Speed
+      Health
+      Move Vectors
+      Spawn Location
+      Time to live
+    Evolve over time
+      optimal paths
+      fitness algo
+      breed after time or after kill?
