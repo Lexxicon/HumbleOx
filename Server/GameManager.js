@@ -33,7 +33,7 @@ GameManager.prototype.evaluate = new Fitness().evaluate;
 
 GameManager.prototype.start = function(players, world){
   this.world = world || this.world;
-  this.heart = new Heart(this.world.cpy().mul(0.5), (players||[]).length * 4 + 10);
+  this.heart = new Heart(this.world.cpy().mul(0.5), (players||[]).length * 4 + 40);
   this.gameTime = 0;
   this.resources = [];
   this.genePool = [];

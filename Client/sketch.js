@@ -10,7 +10,7 @@ let name = "-";
 var nameInput, connectButton, namePrompt;
 
 function setup() {
-  socket = io.connect('http://localhost:3000');
+  socket = io.connect('http://lexxicon.crabdance.com:3000');
   frameRate(60);
 
   nameInput = createInput();
@@ -79,6 +79,7 @@ function draw() {
     background(0);
 
     if(world && world.heart){
+      world.heart.color[0] *= world.heart.health/40;
       render(world.heart);
     }
     // render({name:name, x:mouseX, y:mouseY});

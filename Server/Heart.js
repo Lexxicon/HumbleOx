@@ -3,7 +3,7 @@ let Vector = require("./Vector.js");
 
 function Heart(pos, health){
   this.pos = pos || new Vector();
-  this.health = health || 10;
+  this.health = health || 50;
   this.color = [255,0,0];
 }
 

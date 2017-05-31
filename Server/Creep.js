@@ -9,7 +9,7 @@ function Creep(parent){
     this.moveSpeed = 70;
     this.health = 5;
     this.spawnLocation = new Vector(15,15);
-    this.timeToLive = 10;
+    this.timeToLive = 5;
     this.color =[Math.floor(Math.random()*255),Math.floor(Math.random()*255),Math.floor(Math.random()*255)];
   }else{
     this.movements = parent.movements.map(p=>p.cpy());
@@ -23,6 +23,7 @@ function Creep(parent){
   this.age = 0;
   this.damageTaken = 0;
   this.pos = this.spawnLocation.cpy();
+  this.vel = new Vector(0,0);
 }
 
 Creep.random = function(){
@@ -39,7 +40,8 @@ Creep.prototype.update = function(deltaTime){
     //die
   }else{
     let movementIndex = Math.floor((this.age/this.timeToLive) * this.movements.length);
-    this.pos.add(this.movements[movementIndex].cpy().mul(this.moveSpeed*deltaTime));
+    this.vel.add(this.movements[movementIndex].cpy().mul(this.moveSpeed*deltaTime));
+    this.pos.add(this.vel.cpy().mul(deltaTime));
   }
 };
 
