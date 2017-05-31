@@ -25,7 +25,7 @@ setInterval(heartbeat, 1000/tickRate);
 
 function heartbeat() {
   tickCount++;
-  if(tickCount % 10 == 0){
+  if(tickCount % 40 == 0){
     instance.cull();
     instance.spawnCreep();
   }

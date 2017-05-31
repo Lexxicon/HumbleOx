@@ -10,7 +10,6 @@ let name = "-";
 var nameInput, connectButton, namePrompt;
 
 function setup() {
-  socket = io.connect('http://lexxicon.crabdance.com:3000');
   frameRate(60);
 
   nameInput = createInput();
@@ -43,6 +42,7 @@ function keyReleased(){
 function connect(){
   name = nameInput.value();
   createCookie("username",name, 10);
+  socket = io.connect('http://lexxicon.crabdance.com:3000');
   socket.emit('start', {name:name}, a=>{
     console.log("callback " + a);
     console.log(a);
@@ -67,7 +67,7 @@ function mouseMoved(){
 }
 
 function render(player){
-  fill(player.color[0],player.color[1],player.color[2]);
+  fill(Math.floor(player.color[0]),Math.floor(player.color[1]),Math.floor(player.color[2]));
   ellipse(player.pos.x, player.pos.y, 10, 10);
   textAlign(CENTER);
   textSize(14);
@@ -76,6 +76,7 @@ function render(player){
 
 function draw() {
   if(ready){
+    translate(width/4, height/4);
     background(0);
 
     if(world && world.heart){

@@ -15,8 +15,11 @@ Vector.prototype.norm = function(){
     return this;
 }
 
+Vector.prototype.distanceSq = function(target){
+  return Math.pow((this.x - target.x), 2) + Math.pow((this.y - target.y), 2);
+};
 Vector.prototype.distance = function(target){
-  return Math.sqrt(Math.pow((this.x - target.x), 2) + Math.pow((this.y - target.y), 2));
+  return Math.sqrt(distanceSq(target));
 };
 
 Vector.prototype.add = function(x){

@@ -22,7 +22,7 @@ GameManager.prototype.resourceMax = 400;
 GameManager.prototype.resourceMin = 300;
 
 GameManager.prototype.mutationRate = 0.1;
-GameManager.prototype.perfectBreedRate = 40;
+GameManager.prototype.perfectBreedRate = 10;
 GameManager.prototype.baseCullRate = 0.1;
 GameManager.prototype.baseSpawnInterval = 300;
 
@@ -71,9 +71,12 @@ GameManager.prototype.update = function(deltaTime){
   for(let i in this.creeps){
     let crp = this.creeps[i];
     crp.update(deltaTime);
-    let hitHeart = crp.pos.distance(this.heart.pos);
-    if(crp.age > crp.timeToLive || hitHeart < 15){
-      if(hitHeart < 15){
+    let hitHeart = crp.pos.distanceSq(this.heart.pos);
+    if(!crp.closest || crp.closest > hitHeart){
+      crp.closest = hitHeart;
+    }
+    if(crp.age > crp.timeToLive || hitHeart < 225){
+      if(hitHeart < 225){
         this.heart.health--;
       }
       this.creeps.splice(i, 1);
