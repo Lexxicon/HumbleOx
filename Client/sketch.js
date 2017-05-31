@@ -10,7 +10,7 @@ let name = "-";
 var nameInput, connectButton, namePrompt;
 
 function setup() {
-  socket = io.connect('http://lexxicon.crabdance.com:3000');
+  socket = io.connect('http://localhost:3000');
   frameRate(60);
 
   nameInput = createInput();
@@ -27,27 +27,34 @@ function setup() {
 
   textAlign(CENTER);
   textSize(50);
+  ellipseMode(CENTER);
 }
 
 function keyReleased(){
     if(!ready && keyCode == ENTER){
       connect();
+        socket.emit('spawn', {});
+    }
+    if(ready){
+      socket.emit('spawn', {});
     }
 }
 
 function connect(){
-  createCanvas(800,400);
   name = nameInput.value();
   createCookie("username",name, 10);
-  socket.emit('start', {name:name});
+  socket.emit('start', {name:name}, a=>{
+    console.log("callback " + a);
+    console.log(a);
+    createCanvas(a.world.x, a.world.y);
+  });
 
   socket.on('heartbeat', (data)=>{
-    world = data.filter(a=> socket.id != a.id);
+    world = data;
   });
   connectButton.remove();
   nameInput.remove();
   namePrompt.remove();
-  noCursor();
   noStroke();
   ready=true;
 }
@@ -60,23 +67,26 @@ function mouseMoved(){
 }
 
 function render(player){
-  fill(255);
-  ellipse(player.x, player.y, 10, 10);
+  fill(player.color[0],player.color[1],player.color[2]);
+  ellipse(player.pos.x, player.pos.y, 10, 10);
   textAlign(CENTER);
   textSize(14);
-  text(player.name||"-", player.x, player.y + 24);
+  // text(player.name||"-", player.pos.x, player.pos.y + 24);
 }
 
 function draw() {
   if(ready){
     background(0);
 
-    render({name:name, x:mouseX, y:mouseY});
-
-    for(let i in world){
-      render(world[i]);
+    if(world && world.heart){
+      render(world.heart);
     }
-
-    socket.emit('update', {name: name, x:mouseX, y:mouseY});
+    // render({name:name, x:mouseX, y:mouseY});
+    //
+    for(let i in world.creeps){
+      render(world.creeps[i]);
+    }
+    //
+    // socket.emit('update', {name: name, x:mouseX, y:mouseY});
   }
 }

@@ -4,11 +4,19 @@ function Vector(x, y){
 }
 
 Vector.random = function(){
-  return new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1);
+  return new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1).norm();
 };
 
+Vector.prototype.norm = function(){
+    let m = this.mag();
+    if(m > 0){
+      this.div(m);
+    }
+    return this;
+}
+
 Vector.prototype.distance = function(target){
-  return Math.sqrt((this.x - target.x) ** 2 + (this.y - target.y) ** 2);
+  return Math.sqrt(Math.pow((this.x - target.x), 2) + Math.pow((this.y - target.y), 2));
 };
 
 Vector.prototype.add = function(x){
