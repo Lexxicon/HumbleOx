@@ -34,7 +34,7 @@ GameManager.prototype.evaluate = new Fitness().evaluate;
 
 GameManager.prototype.start = function(players, world){
   this.world = world || this.world;
-  this.heart = new Heart(this.world.cpy().mul(0.5), (players||[]).length * 4 + 40);
+  this.heart = new Heart(this.world.cpy().mul(0.5));
   this.gameTime = 0;
   this.resources = [];
   this.genePool = [];
@@ -48,8 +48,14 @@ GameManager.prototype.start = function(players, world){
 
 GameManager.prototype.cull = function(){
   let newGen = [];
-  for(let i = 0; i < this.baseCullSize; i++){
-    newGen.push(this.nextGen[Math.floor(Math.random() * this.nextGen.length)]);
+  if(this.nextGen.length > 0){
+    for(let i = 0; i < this.baseCullSize; i++){
+      newGen.push(this.nextGen[Math.floor(Math.random() * this.nextGen.length)]);
+    }
+  }else{
+    for(let i = 0; i < this.baseCullSize; i++){
+      newGen.push(this.nextGen[Math.floor(Math.random() * this.nextGen.length)]);
+    }
   }
   this.gen += 1;
   console.log("Spawned generation " + this.gen);

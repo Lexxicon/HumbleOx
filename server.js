@@ -26,7 +26,7 @@ setInterval(heartbeat, 1000/tickRate);
 
 function heartbeat() {
   tickCount++;
-  if(instance.nextGen.length > 200 || (tickCount - lastCull) > 10000) {
+  if(instance.nextGen.length > 200 || (tickCount - lastCull) > 1000) {
     lastCull = tickCount;
     instance.cull();
   }
