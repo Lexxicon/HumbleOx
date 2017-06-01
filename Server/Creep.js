@@ -68,10 +68,8 @@ Creep.breed = function(parent, world, mutationRate){
     }
   }
 
-  for(let i = 0; i < mutant.movements.length; i++){
-    if(Math.random() < mutationRate){
-      mutant.movements[i].rotate(randomRange(Math.PI/2));
-    }
+  if(Math.random() < mutationRate){
+    mutant.movements[Math.floor(Math.random() *  mutant.movements.length)].rotate(randomRange(Math.PI/2));
   }
 
   let baby = new Creep(mutant);

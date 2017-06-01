@@ -9,8 +9,9 @@ function GameManager(){
   this.towers = [];
   this.creeps = [];
   this.genePool = [];
-  this.a = "test";
+  this.nextGen = [];
   this.heart = new Heart();
+  this.gen = 1;
 
   this.world = new Vector(500, 500);
 
@@ -23,7 +24,7 @@ GameManager.prototype.resourceMin = 300;
 
 GameManager.prototype.mutationRate = 0.1;
 GameManager.prototype.perfectBreedRate = 10;
-GameManager.prototype.baseCullRate = 0.1;
+GameManager.prototype.baseCullSize = 50;
 GameManager.prototype.baseSpawnInterval = 300;
 
 // not needed because the AI must learn first
@@ -37,24 +38,23 @@ GameManager.prototype.start = function(players, world){
   this.gameTime = 0;
   this.resources = [];
   this.genePool = [];
+  this.nextGen = [];
   this.creeps = [];
+  this.gen = 1;
   for(let i = 0; i < 10; i++){
     this.genePool.push(new Creep());
   }
 };
 
 GameManager.prototype.cull = function(){
-  if(this.genePool.length > 10){
-    this.genePool.forEach((val, i, arr)=>{
-      let j = Math.floor(Math.random()*arr.length);
-      arr[i] = arr[j];
-      arr[j] = val;
-    });
-    let cullAmount = Math.floor(this.genePool.length * this.baseCullRate);
-    while(0 < cullAmount--){
-      this.genePool.shift();
-    }
+  let newGen = [];
+  for(let i = 0; i < this.baseCullSize; i++){
+    newGen.push(this.nextGen[Math.floor(Math.random() * this.nextGen.length)]);
   }
+  this.gen += 1;
+  console.log("Spawned generation " + this.gen);
+  this.genePool = newGen;
+  this.nextGen = [];
 };
 
 GameManager.prototype.spawnCreep = function () {
@@ -82,7 +82,7 @@ GameManager.prototype.update = function(deltaTime){
       this.creeps.splice(i, 1);
       let fit = this.evaluate(crp, this.heart) * this.perfectBreedRate;
       while(0 < fit--){
-        this.genePool.push(crp);
+        this.nextGen.push(crp);
       }
     }
   }

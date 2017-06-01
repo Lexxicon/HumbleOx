@@ -1,5 +1,6 @@
 let tickRate = 60;
 let tickCount = 0;
+let lastCull = 0;
 let GameManager = require('./Server/GameManager.js');
 
 let instance = new GameManager();
@@ -25,8 +26,11 @@ setInterval(heartbeat, 1000/tickRate);
 
 function heartbeat() {
   tickCount++;
-  if(tickCount % 40 == 0){
+  if(instance.nextGen.length > 200 || (tickCount - lastCull) > 10000) {
+    lastCull = tickCount;
     instance.cull();
+  }
+  if(tickCount % 40 == 0){
     instance.spawnCreep();
   }
   instance.update((1000/tickRate)/1000);
