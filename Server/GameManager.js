@@ -2,6 +2,7 @@ let Vector = require("./Vector.js");
 let Heart = require("./Heart.js");
 let Creep = require("./Creep.js");
 let CreepSpawner = require("./CreepSpawner.js");
+let ResourceManager = require("./ResourceManager");
 
 function GameManager(){
   this.players = [];
@@ -11,6 +12,8 @@ function GameManager(){
   this.genePool = [];
   this.nextGen = [];
   this.creepSpawners = [new CreepSpawner(this)];
+
+  this.resourceManager = new ResourceManager(this);
 
   this.heart = new Heart();
   this.gen = 1;
@@ -31,6 +34,7 @@ GameManager.prototype.baseSpawnInterval = 300;
 GameManager.prototype.start = function(players, world){
   this.world = world || this.world;
   this.heart = new Heart(this.world.cpy().mul(0.5));
+  this.resourceManager = new ResourceManager(this);
   this.gameTime = 0;
   this.resources = [];
   this.genePool = [];
@@ -45,6 +49,8 @@ GameManager.prototype.start = function(players, world){
 
 GameManager.prototype.update = function(deltaTime){
   this.gameTime += deltaTime;
+  this.resourceManager.update(deltaTime);
+
   for(let i in this.creepSpawners){
     this.creepSpawners[i].update(deltaTime);
   }
@@ -55,11 +61,10 @@ GameManager.prototype.update = function(deltaTime){
     if(!crp.closest || crp.closest > hitHeart){
       crp.closest = hitHeart;
     }
-    if(crp.age > crp.timeToLive || hitHeart < 225){
+    if(hitHeart < 225){
       if(hitHeart < 225){
         this.heart.health--;
       }
-      this.creeps.splice(i, 1);
       crp.handleDeath();
     }
   }

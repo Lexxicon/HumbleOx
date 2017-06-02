@@ -1,4 +1,5 @@
 let Vector = require("./Vector.js");
+let Util = require("./Util.js");
 
 function Creep(parent){
   if(!parent){
@@ -49,7 +50,7 @@ Creep.prototype.handleDeath = function(){
 Creep.prototype.update = function(deltaTime){
   this.age += deltaTime;
   if(this.age > this.timeToLive){
-    //die
+    this.handleDeath();
   }else{
     let movementIndex = Math.floor((this.age/this.timeToLive) * this.movements.length);
     this.vel.add(this.movements[movementIndex].cpy().mul(this.moveSpeed*deltaTime));
@@ -57,16 +58,16 @@ Creep.prototype.update = function(deltaTime){
   }
 };
 
-Creep.breed = function(parent,mutationRate){
+Creep.breed = function(parent, mutationRate){
   parent = parent || new Creep();
   let mutant = parent.copy();
   mutationRate = mutationRate || 0.01;
 
-  mutant.moveSpeed = mutate(mutant.moveSpeed, 1, mutationRate);
-  mutant.health = mutate(mutant.health, .5, mutationRate);
-  mutant.timeToLive = mutate(mutant.timeToLive, 4, mutationRate);
+  mutant.moveSpeed = Util.mutate(mutant.moveSpeed, 1, mutationRate);
+  mutant.health = Util.mutate(mutant.health, .5, mutationRate);
+  mutant.timeToLive = Util.mutate(mutant.timeToLive, 4, mutationRate);
   for(let i = 0; i < mutant.color.length; i++){
-    mutant.color[i] = clamp(mutate(mutant.color[i], 20, mutationRate), 0, 255);
+    mutant.color[i] = Util.clamp(Util.mutate(mutant.color[i], 20, mutationRate), 0, 255);
   }
 
   if(Math.random() < mutationRate){
@@ -79,27 +80,12 @@ Creep.breed = function(parent,mutationRate){
   }
 
   if(Math.random() < mutationRate){
-    mutant.movements[Math.floor(Math.random() *  mutant.movements.length)].rotate(randomRange(Math.PI/4));
+    Util.randomIndex(mutant.movements).rotate(Util.randomRange(Math.PI/4));
   }
 
   let baby = new Creep(mutant);
   return baby;
 };
-
-function clamp(val, min, max) {
-  return Math.min(Math.max(val, min), max);
-}
-
-function mutate(value, amount, rate){
-  if(Math.random() < rate){
-    value += randomRange(amount);
-  }
-  return value;
-}
-
-function randomRange(max){
-  return (Math.random() * 2 - 1) * max;
-}
 
 if (typeof module !== "undefined" && module.exports) {
   module.exports = Creep;

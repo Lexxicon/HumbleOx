@@ -1,5 +1,6 @@
 let Creep = require("./Creep.js");
 let Fitness = require("./Fitness.js");
+let Util = require("./Util.js");
 
 function CreepSpawner(gameManager){
   this.genePool = [];
@@ -21,7 +22,7 @@ CreepSpawner.prototype.rank = new Fitness().evaluate;
 CreepSpawner.prototype.createNewGeneration = function(){
   let pool = [];
   while(pool.length < this.poolSize){
-    pool.push(this.nextGen[Math.floor(Math.random() * this.nextGen.length)] || Creep.random());
+    pool.push(Util.randomIndex(this.nextGen)|| Creep.random());
   }
   this.gen += 1;
   console.log("Spawned generation " + this.gen +"------------");
@@ -58,6 +59,11 @@ CreepSpawner.prototype.addToNextGen = function(creep){
   }
 };
 
+CreepSpawner.prototype.remove = function(creep){
+  let i = this.gameManager.creeps.indexOf(creep);
+  this.gameManager.creeps.slice(i, 1);
+};
+
 CreepSpawner.prototype.spawn = function(){
   if(this.genePool.length == 0){
     this.createNewGeneration();
@@ -65,8 +71,12 @@ CreepSpawner.prototype.spawn = function(){
 
   let c = Creep.breed(this.genePool.shift(), this.mutationRate);
   c.onDeath(this.addToNextGen.bind(this));
-
+  c.onDeath(Util.remove.bind(this, this.gameManager.creeps));
   return c;
+};
+
+CreepSpawner.prototype.mutate = function(creep){
+
 };
 
 if (typeof module !== "undefined" && module.exports) {

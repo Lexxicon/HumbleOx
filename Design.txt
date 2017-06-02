@@ -21,6 +21,12 @@ Tower Defense
     dies when out of quantity
 
   Towers
+    Common Stats
+      pos
+      storage
+      health?
+      link
+        are these done manually?
     Towers run on resource
       Have local storage
     Resource is harvested
