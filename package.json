@@ -13,5 +13,9 @@
   },
   "author": "",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/Lexxicon/tankshot#readme"
+  "homepage": "https://bitbucket.org/Lexxicon/tankshot#readme",
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-google": "^0.7.1"
+  }
 }

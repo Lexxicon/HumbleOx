@@ -10,8 +10,8 @@ Fitness.prototype.evaluate = function(creep, target){
   }else{
     return (startDst - dst)/startDst;
   }
-}
+};
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== "undefined" && module.exports) {
   module.exports = Fitness;
 }

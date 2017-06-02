@@ -24,6 +24,7 @@ function Creep(parent){
   this.damageTaken = 0;
   this.pos = this.spawnLocation.cpy();
   this.vel = new Vector(0,0);
+  this.deathHndls = [];
 }
 
 Creep.random = function(){
@@ -32,7 +33,18 @@ Creep.random = function(){
 
 Creep.prototype.copy = function(){
   return new Creep(this);
-}
+};
+
+Creep.prototype.onDeath = function(hndl){
+  this.deathHndls.push(hndl);
+  return this;
+};
+
+Creep.prototype.handleDeath = function(){
+  for(let i = 0; i < this.deathHndls.length; i++){
+    this.deathHndls[i](this);
+  }
+};
 
 Creep.prototype.update = function(deltaTime){
   this.age += deltaTime;
@@ -45,7 +57,8 @@ Creep.prototype.update = function(deltaTime){
   }
 };
 
-Creep.breed = function(parent, world, mutationRate){
+Creep.breed = function(parent,mutationRate){
+  parent = parent || new Creep();
   let mutant = parent.copy();
   mutationRate = mutationRate || 0.01;
 
@@ -54,9 +67,6 @@ Creep.breed = function(parent, world, mutationRate){
   mutant.timeToLive = mutate(mutant.timeToLive, 4, mutationRate);
   for(let i = 0; i < mutant.color.length; i++){
     mutant.color[i] = clamp(mutate(mutant.color[i], 20, mutationRate), 0, 255);
-  }
-  if(Math.random() < mutationRate){
-    mutant.spawnLocation = moveAlongRect(mutant.spawnLocation, randomRange(10), world);
   }
 
   if(Math.random() < mutationRate){
@@ -78,40 +88,6 @@ Creep.breed = function(parent, world, mutationRate){
 
 function clamp(val, min, max) {
   return Math.min(Math.max(val, min), max);
-};
-
-function moveAlongRect(origin, amount, world){
-  let max = (world.x + world.y) * 2;
-  let current = 0;
-
-  if(origin.y == 0){
-    current = origin.x;
-  }else if(origin.x == world.x){
-    current = world.x + origin.y;
-  }else if(origin.y == world.y){
-    current += world.x + world.y + (world.x - origin.x);
-  }else if(origin.x == 0){
-    current += world.x + world.y + world.x + (world.y - origin.y);
-  }
-
-  let targetDest = (current + amount) % max;
-
-  if(targetDest < world.x){
-    return new Vector(targetDest, 0);
-  }
-  targetDest -= world.x;
-  if(targetDest < world.y){
-    return new Vector(world.x, targetDest);
-  }
-  targetDest -= world.y;
-  if(targetDest < world.x){
-    return new Vector(world.x - targetDest, world.y);
-  }
-  targetDest -= world.x;
-  if(targetDest < world.y){
-    return new Vector(0, world.y - targetDest);
-  }
-  throw "we just broke the world";
 }
 
 function mutate(value, amount, rate){
@@ -125,6 +101,6 @@ function randomRange(max){
   return (Math.random() * 2 - 1) * max;
 }
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== "undefined" && module.exports) {
   module.exports = Creep;
 }

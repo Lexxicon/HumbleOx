@@ -8,22 +8,22 @@ Vector.random = function(){
 };
 
 Vector.prototype.norm = function(){
-    let m = this.mag();
-    if(m > 0){
-      this.div(m);
-    }
-    return this;
-}
+  let m = this.mag();
+  if(m > 0){
+    this.div(m);
+  }
+  return this;
+};
 
 Vector.prototype.distanceSq = function(target){
   return Math.pow((this.x - target.x), 2) + Math.pow((this.y - target.y), 2);
 };
 Vector.prototype.distance = function(target){
-  return Math.sqrt(distanceSq(target));
+  return Math.sqrt(this.distanceSq(target));
 };
 
 Vector.prototype.add = function(x){
-  if(typeof x == 'number'){
+  if(typeof x == "number"){
     this.x += x;
     this.y += x;
   }else{
@@ -34,7 +34,7 @@ Vector.prototype.add = function(x){
 };
 
 Vector.prototype.mul = function(x){
-  if(typeof x == 'number'){
+  if(typeof x == "number"){
     this.x *= x;
     this.y *= x;
   }else{
@@ -45,7 +45,7 @@ Vector.prototype.mul = function(x){
 };
 
 Vector.prototype.div = function(x){
-  if(typeof x == 'number'){
+  if(typeof x == "number"){
     this.x /= x;
     this.y /= x;
   }else{
@@ -75,6 +75,6 @@ Vector.prototype.cpy = function(){
   return new Vector(this.x, this.y);
 };
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== "undefined" && module.exports) {
   module.exports = Vector;
 }

@@ -1,7 +1,7 @@
 let Vector = require("./Vector.js");
 let Heart = require("./Heart.js");
 let Creep = require("./Creep.js");
-let Fitness = require("./Fitness.js");
+let CreepSpawner = require("./CreepSpawner.js");
 
 function GameManager(){
   this.players = [];
@@ -10,6 +10,8 @@ function GameManager(){
   this.creeps = [];
   this.genePool = [];
   this.nextGen = [];
+  this.creepSpawners = [new CreepSpawner(this)];
+
   this.heart = new Heart();
   this.gen = 1;
 
@@ -21,16 +23,10 @@ function GameManager(){
 GameManager.prototype.resourceLimit = 10;
 GameManager.prototype.resourceMax = 400;
 GameManager.prototype.resourceMin = 300;
-
-GameManager.prototype.mutationRate = 0.1;
-GameManager.prototype.perfectBreedRate = 10;
-GameManager.prototype.baseCullSize = 50;
 GameManager.prototype.baseSpawnInterval = 300;
 
 // not needed because the AI must learn first
 // GameManager.prototype.gracePeriod = 60;
-
-GameManager.prototype.evaluate = new Fitness().evaluate;
 
 GameManager.prototype.start = function(players, world){
   this.world = world || this.world;
@@ -40,40 +36,18 @@ GameManager.prototype.start = function(players, world){
   this.genePool = [];
   this.nextGen = [];
   this.creeps = [];
+  this.creepSpawners = [new CreepSpawner(this)];
   this.gen = 1;
   for(let i = 0; i < 10; i++){
     this.genePool.push(new Creep());
   }
 };
 
-GameManager.prototype.cull = function(){
-  let newGen = [];
-  if(this.nextGen.length > 0){
-    for(let i = 0; i < this.baseCullSize; i++){
-      newGen.push(this.nextGen[Math.floor(Math.random() * this.nextGen.length)]);
-    }
-  }else{
-    for(let i = 0; i < this.baseCullSize; i++){
-      newGen.push(this.nextGen[Math.floor(Math.random() * this.nextGen.length)]);
-    }
-  }
-  this.gen += 1;
-  console.log("Spawned generation " + this.gen);
-  this.genePool = newGen;
-  this.nextGen = [];
-};
-
-GameManager.prototype.spawnCreep = function () {
-  if(this.genePool.length == 0 || Math.random() < this.mutationRate){
-    this.creeps.push(Creep.random());
-  }else{
-    let i = Math.floor(Math.random() * this.genePool.length);
-    this.creeps.push(Creep.breed(this.genePool[i], this.world, this.mutationRate));
-  }
-};
-
 GameManager.prototype.update = function(deltaTime){
   this.gameTime += deltaTime;
+  for(let i in this.creepSpawners){
+    this.creepSpawners[i].update(deltaTime);
+  }
   for(let i in this.creeps){
     let crp = this.creeps[i];
     crp.update(deltaTime);
@@ -86,10 +60,7 @@ GameManager.prototype.update = function(deltaTime){
         this.heart.health--;
       }
       this.creeps.splice(i, 1);
-      let fit = this.evaluate(crp, this.heart) * this.perfectBreedRate;
-      while(0 < fit--){
-        this.nextGen.push(crp);
-      }
+      crp.handleDeath();
     }
   }
 
@@ -108,8 +79,8 @@ GameManager.prototype.getState = function(){
     world:this.world,
     gameTime:this.gameTime,
   };
-}
+};
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== "undefined" && module.exports) {
   module.exports = GameManager;
 }

@@ -1,13 +1,13 @@
 let tickRate = 60;
 let tickCount = 0;
 let lastCull = 0;
-let GameManager = require('./Server/GameManager.js');
+let GameManager = require("./Server/GameManager.js");
 
 let instance = new GameManager();
 instance.start();
 
 // Using express: http://expressjs.com/
-let express = require('express');
+let express = require("express");
 let app = express();
 
 // Set up the server
@@ -16,58 +16,47 @@ let server = app.listen(3000, "0.0.0.0", listen);
 function listen() {
   let host = server.address().address;
   let port = server.address().port;
-  console.log('TankShot listening at http://' + host + ':' + port);
+  console.log("TankShot listening at http://" + host + ":" + port);
 }
 
-app.use(express.static('public'));
-let io = require('socket.io')(server);
+app.use(express.static("public"));
+let io = require("socket.io")(server);
 
 setInterval(heartbeat, 1000/tickRate);
 
 function heartbeat() {
   tickCount++;
-  if(instance.nextGen.length > 200 || (tickCount - lastCull) > 1000) {
-    lastCull = tickCount;
-    instance.cull();
-  }
-  if(tickCount % 40 == 0){
-    instance.spawnCreep();
-  }
   instance.update((1000/tickRate)/1000);
   let packagedWorld = instance.getState();
-  io.sockets.emit('heartbeat',packagedWorld);
+  io.sockets.emit("heartbeat",packagedWorld);
 }
 
 
 // Register a callback function to run when we have an individual connection
 // This is run for each individual user that connects
-io.sockets.on('connection',
+io.sockets.on("connection",
   // We are given a websocket object in our function
   function(socket) {
 
     console.log("We have a new client: " + socket.id);
 
-    socket.on('spawn', function(data){
-      console.log("spawning creep");
-      instance.spawnCreep();
+    socket.on("spawn", function(data){
     });
-    socket.on('cull', function(data){
-      console.log("culling creep");
-      instance.cull();
+    socket.on("cull", function(data){
     });
-    socket.on('start',
+    socket.on("start",
       function(data, fn) {
         console.log("start: " + socket.id + ": " + data.name);
         fn({world:instance.world});
       }
     );
 
-    socket.on('update',
+    socket.on("update",
       function(data) {
       }
     );
 
-    socket.on('disconnect', function() {
+    socket.on("disconnect", function() {
       console.log("Client " + socket.id + " has disconnected");
     });
   }
