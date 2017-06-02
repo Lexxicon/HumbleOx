@@ -8,12 +8,13 @@ function CreepSpawner(gameManager){
   this.worldtime = 0;
   this.lastSpawnTime = 0;
   this.gameManager = gameManager;
+  this.maxFitness = 0;
 }
 
 CreepSpawner.prototype.mutationRate = 0.1;
 CreepSpawner.prototype.perfectBreedRate = 10;
-CreepSpawner.prototype.poolSize = 20;
-CreepSpawner.prototype.spawnRate = 0.5;
+CreepSpawner.prototype.poolSize = 40;
+CreepSpawner.prototype.spawnRate = 0.25;
 
 CreepSpawner.prototype.rank = new Fitness().evaluate;
 
@@ -23,7 +24,18 @@ CreepSpawner.prototype.createNewGeneration = function(){
     pool.push(this.nextGen[Math.floor(Math.random() * this.nextGen.length)] || Creep.random());
   }
   this.gen += 1;
-  console.log("Spawned generation " + this.gen);
+  console.log("Spawned generation " + this.gen +"------------");
+  if(this.nextGen.length > 0){
+    let avgFit = this.nextGen.map(a=>a.fit).reduce((a,b)=>a+b)/this.nextGen.length;
+    let medFit = this.nextGen.map(a=>a.fit).sort((a,b)=>a-b)[Math.floor(this.nextGen.length/2)];
+    let minFit = this.nextGen.map(a=>a.fit).reduce((a,b)=>Math.min(a,b));
+    let maxFit = this.nextGen.map(a=>a.fit).reduce((a,b)=>Math.max(a,b));
+    console.log("  Average: " + avgFit);
+    console.log("   Median: " + medFit);
+    console.log("  Minimum: " + minFit);
+    console.log("  Maximum: " + maxFit);
+  }
+  this.maxFitness = 0;
   this.genePool = pool;
   this.nextGen = [];
 };
@@ -37,8 +49,11 @@ CreepSpawner.prototype.update = function(deltaTime){
 };
 
 CreepSpawner.prototype.addToNextGen = function(creep){
-  let fit = this.rank(creep, this.gameManager.heart) * this.perfectBreedRate;
-  while(0 < fit--){
+  let fit = this.rank(creep, this.gameManager.heart);
+  creep.fit = fit;
+  this.maxFitness = Math.max(this.maxFitness, fit);
+  let weightedFit = fit * fit * this.perfectBreedRate;
+  while(0 < weightedFit--){
     this.nextGen.push(creep);
   }
 };

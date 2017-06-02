@@ -1,6 +1,4 @@
 let tickRate = 60;
-let tickCount = 0;
-let lastCull = 0;
 let GameManager = require("./Server/GameManager.js");
 
 let instance = new GameManager();
@@ -25,7 +23,6 @@ let io = require("socket.io")(server);
 setInterval(heartbeat, 1000/tickRate);
 
 function heartbeat() {
-  tickCount++;
   instance.update((1000/tickRate)/1000);
   let packagedWorld = instance.getState();
   io.sockets.emit("heartbeat",packagedWorld);

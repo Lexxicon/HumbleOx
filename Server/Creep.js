@@ -79,7 +79,7 @@ Creep.breed = function(parent,mutationRate){
   }
 
   if(Math.random() < mutationRate){
-    mutant.movements[Math.floor(Math.random() *  mutant.movements.length)].rotate(randomRange(Math.PI/2));
+    mutant.movements[Math.floor(Math.random() *  mutant.movements.length)].rotate(randomRange(Math.PI/4));
   }
 
   let baby = new Creep(mutant);
