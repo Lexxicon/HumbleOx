@@ -2,7 +2,7 @@ function Util(){
 
 }
 Util.remove = function(value, array){
-  return array.slice(array.indexOf(value), 1);
+  return array.splice(array.indexOf(value), 1);
 };
 
 Util.randomInt = function(max){

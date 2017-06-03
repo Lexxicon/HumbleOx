@@ -1,8 +1,9 @@
 let Creep = require("./Creep.js");
 let Fitness = require("./Fitness.js");
 let Util = require("./Util.js");
+let Vector = require("./Vector.js");
 
-function CreepSpawner(gameManager){
+function CreepSpawner(gameManager, location){
   this.genePool = [];
   this.nextGen = [];
   this.gen = 0;
@@ -10,12 +11,13 @@ function CreepSpawner(gameManager){
   this.lastSpawnTime = 0;
   this.gameManager = gameManager;
   this.maxFitness = 0;
+  this.pos = location || new Vector(0,0);
 }
 
 CreepSpawner.prototype.mutationRate = 0.1;
 CreepSpawner.prototype.perfectBreedRate = 10;
 CreepSpawner.prototype.poolSize = 40;
-CreepSpawner.prototype.spawnRate = 0.25;
+CreepSpawner.prototype.spawnRate = 0.5;
 
 CreepSpawner.prototype.rank = new Fitness().evaluate;
 
@@ -61,7 +63,7 @@ CreepSpawner.prototype.addToNextGen = function(creep){
 
 CreepSpawner.prototype.remove = function(creep){
   let i = this.gameManager.creeps.indexOf(creep);
-  this.gameManager.creeps.slice(i, 1);
+  this.gameManager.creeps.splice(i, 1);
 };
 
 CreepSpawner.prototype.spawn = function(){
@@ -70,8 +72,10 @@ CreepSpawner.prototype.spawn = function(){
   }
 
   let c = Creep.breed(this.genePool.shift(), this.mutationRate);
+  c.spawnLocation = this.pos.cpy();
+  c.pos = this.pos.cpy();
   c.onDeath(this.addToNextGen.bind(this));
-  c.onDeath(Util.remove.bind(this, this.gameManager.creeps));
+  c.onDeath(Util.remove.bind(this, c, this.gameManager.creeps).bind(this));
   return c;
 };
 

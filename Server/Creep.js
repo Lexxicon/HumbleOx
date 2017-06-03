@@ -11,7 +11,7 @@ function Creep(parent){
     this.health = 5;
     this.spawnLocation = new Vector(15,15);
     this.timeToLive = 8;
-    this.color =[Math.floor(Math.random()*255),Math.floor(Math.random()*255),Math.floor(Math.random()*255)];
+    this.color =[Math.floor(Math.random()*100),100,Math.floor(Math.random()*50)+50];
   }else{
     this.movements = parent.movements.map(p=>p.cpy());
     this.moveSpeed = parent.moveSpeed;
@@ -58,6 +58,13 @@ Creep.prototype.update = function(deltaTime){
   }
 };
 
+Creep.prototype.pack = function(){
+  return {
+    color:this.color,
+    pos:this.pos,
+  };
+};
+
 Creep.breed = function(parent, mutationRate){
   parent = parent || new Creep();
   let mutant = parent.copy();
@@ -67,7 +74,7 @@ Creep.breed = function(parent, mutationRate){
   mutant.health = Util.mutate(mutant.health, .5, mutationRate);
   mutant.timeToLive = Util.mutate(mutant.timeToLive, 4, mutationRate);
   for(let i = 0; i < mutant.color.length; i++){
-    mutant.color[i] = Util.clamp(Util.mutate(mutant.color[i], 20, mutationRate), 0, 255);
+    mutant.color[i] = Util.clamp(Util.mutate(mutant.color[i], 20, mutationRate), 0, 100);
   }
 
   if(Math.random() < mutationRate){

@@ -27,6 +27,7 @@ function setup() {
   textAlign(CENTER);
   textSize(50);
   ellipseMode(CENTER);
+  colorMode(HSB,100);
 }
 
 function keyReleased(){
@@ -44,19 +45,23 @@ function connect(){
   createCookie("username",name, 10);
   socket = io.connect("http://lexxicon.crabdance.com:3000");
   socket.emit("start", {name:name}, a=>{
-    console.log("callback " + a);
+    console.log("callback ");
     console.log(a);
-    createCanvas(a.world.x, a.world.y);
   });
 
   socket.on("heartbeat", (data)=>{
+    if(!ready){
+
+      ready=true;
+      createCanvas(data.world.x, data.world.y);
+      background(255);
+    }
     world = data;
   });
   connectButton.remove();
   nameInput.remove();
   namePrompt.remove();
   noStroke();
-  ready=true;
 }
 
 function mouseMoved(){
@@ -68,7 +73,8 @@ function mouseMoved(){
 
 function render(player){
   fill(Math.floor(player.color[0]),Math.floor(player.color[1]),Math.floor(player.color[2]));
-  ellipse(player.pos.x, player.pos.y, 10, 10);
+
+  ellipse(player.pos.x, player.pos.y, 5, 5);
   textAlign(CENTER);
   textSize(14);
   // text(player.name||"-", player.pos.x, player.pos.y + 24);
@@ -76,11 +82,10 @@ function render(player){
 
 function draw() {
   if(ready){
-    translate(width/4, height/4);
-    background(0);
+    // background(0);
 
     if(world && world.heart){
-      world.heart.color[0] *= world.heart.health/40;
+      world.heart.color[2] *= world.heart.health/40;
       render(world.heart);
     }
     // render({name:name, x:mouseX, y:mouseY});

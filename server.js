@@ -1,4 +1,4 @@
-let tickRate = 60;
+let tickRate = 30;
 let GameManager = require("./Server/GameManager.js");
 
 let instance = new GameManager();

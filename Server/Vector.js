@@ -3,7 +3,10 @@ function Vector(x, y){
   this.y = y || 0;
 }
 
-Vector.random = function(){
+Vector.random = function(source){
+  if(source){
+    return new Vector(Math.random()* source.x, Math.random() * source.y);
+  }
   return new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1).norm();
 };
 
