@@ -1,4 +1,5 @@
 let tickRate = 30;
+let timePerTick = 1000/tickRate;
 let GameManager = require("./Server/GameManager.js");
 
 let instance = new GameManager();
@@ -20,10 +21,10 @@ function listen() {
 app.use(express.static("public"));
 let io = require("socket.io")(server);
 
-setInterval(heartbeat, 1000/tickRate);
+setInterval(heartbeat, timePerTick);
 
 function heartbeat() {
-  instance.update((1000/tickRate)/1000);
+  instance.update((timePerTick)/1000);
   let packagedWorld = instance.getState();
   io.sockets.emit("heartbeat",packagedWorld);
 }

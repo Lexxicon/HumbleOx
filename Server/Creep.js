@@ -69,6 +69,9 @@ Creep.breed = function(parent, mutationRate){
   parent = parent || new Creep();
   let mutant = parent.copy();
   mutationRate = mutationRate || 0.01;
+  if(Math.random() < mutationRate){
+    return Creep.random();
+  }
 
   mutant.moveSpeed = Util.mutate(mutant.moveSpeed, 1, mutationRate);
   mutant.health = Util.mutate(mutant.health, .5, mutationRate);
