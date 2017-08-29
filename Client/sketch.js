@@ -23,29 +23,29 @@ function setup() {
   textAlign(CENTER);
   textSize(50);
   ellipseMode(CENTER);
-  colorMode(HSB,100);
+  colorMode(HSB, 100);
 }
 
 /* exported keyReleased */
-function keyReleased(){
-  if(!ready && keyCode == ENTER){
+function keyReleased() {
+  if (!ready && keyCode == ENTER) {
     connect();
   }
 }
 
-function connect(){
+function connect() {
   let name = nameInput.value();
-  createCookie("username",name, 10);
-  socket = io.connect("http://lexxicon.crabdance.com:3000");
-  socket.emit("start", {name:name}, a=>{
+  createCookie("username", name, 10);
+  socket = io.connect("http://localhost:3000");
+  socket.emit("start", { name: name }, a => {
     console.log("callback ");
     console.log(a);
   });
 
-  socket.on("heartbeat", (data)=>{
-    if(!ready){
+  socket.on("heartbeat", (data) => {
+    if (!ready) {
 
-      ready=true;
+      ready = true;
       createCanvas(data.world.x, data.world.y);
       background(255);
     }
@@ -58,25 +58,25 @@ function connect(){
 }
 
 /* exported mouseMoved */
-function mouseMoved(){
+function mouseMoved() {
 }
 
-function render(player){
-  fill(Math.floor(player.color[0]),Math.floor(player.color[1]),Math.floor(player.color[2]));
+function render(player) {
+  fill(Math.floor(player.color[0]), Math.floor(player.color[1]), Math.floor(player.color[2]));
 
-  ellipse(player.pos.x, player.pos.y, 5, 2);
+  ellipse(player.pos.x, player.pos.y, 5, 5);
 }
 
 /* exported draw */
 function draw() {
-  if(ready){
-    // background(0);
+  if (ready) {
+    background(255);
 
-    if(world && world.heart){
-      world.heart.color[2] *= world.heart.health/40;
+    if (world && world.heart) {
+      world.heart.color[2] *= world.heart.health / 40;
       render(world.heart);
     }
-    for(let i in world.creeps){
+    for (let i in world.creeps) {
       render(world.creeps[i]);
     }
   }

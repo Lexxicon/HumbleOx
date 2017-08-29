@@ -1,5 +1,5 @@
 let tickRate = 30;
-let timePerTick = 1000/tickRate;
+let timePerTick = 1000 / tickRate;
 let GameManager = require("./Server/GameManager.js");
 
 let instance = new GameManager();
@@ -15,7 +15,7 @@ let server = app.listen(3000, "0.0.0.0", listen);
 function listen() {
   let host = server.address().address;
   let port = server.address().port;
-  console.log("TankShot listening at http://" + host + ":" + port);
+  console.log("Humble Ox listening at http://" + host + ":" + port);
 }
 
 app.use(express.static("public"));
@@ -24,9 +24,9 @@ let io = require("socket.io")(server);
 setInterval(heartbeat, timePerTick);
 
 function heartbeat() {
-  instance.update((timePerTick)/1000);
+  instance.update((timePerTick) / 1000);
   let packagedWorld = instance.getState();
-  io.sockets.emit("heartbeat",packagedWorld);
+  io.sockets.emit("heartbeat", packagedWorld);
 }
 
 
@@ -34,27 +34,27 @@ function heartbeat() {
 // This is run for each individual user that connects
 io.sockets.on("connection",
   // We are given a websocket object in our function
-  function(socket) {
+  function (socket) {
 
     console.log("We have a new client: " + socket.id);
 
-    socket.on("spawn", function(data){
+    socket.on("spawn", function (data) {
     });
-    socket.on("cull", function(data){
+    socket.on("cull", function (data) {
     });
     socket.on("start",
-      function(data, fn) {
+      function (data, fn) {
         console.log("start: " + socket.id + ": " + data.name);
-        fn({world:instance.world});
+        fn({ world: instance.world });
       }
     );
 
     socket.on("update",
-      function(data) {
+      function (data) {
       }
     );
 
-    socket.on("disconnect", function() {
+    socket.on("disconnect", function () {
       console.log("Client " + socket.id + " has disconnected");
     });
   }
